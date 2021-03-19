@@ -11,7 +11,7 @@ const initialState = {
 
 
 export const actions = {
-    addTask: (newTask: string) => ({ type: ADD_TASK, newTask }),
+    addTask: (newTask: string) => ({ type: ADD_TASK, newTask } as const),
 }
 
 
