@@ -1,33 +1,36 @@
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import styles from './AddField.module.css'
+import { useDispatch } from 'react-redux'
+import { actions } from '../../redux/tasks-reducer';
 
 type propsType = {}
 
 export const AddField: FC<propsType> = () => {
+    const dispatch = useDispatch()
     return (
         <div>
-            <h1>Anywhere in your app!</h1>
+            <h1>TODO LIST</h1>
             <Formik
                 initialValues={{ task: '' }}
                 validate={values => {
-                    let errors = { task: "" };
+                    const errors = { task: '' };
                     if (!values.task.trim()) {
                         errors.task = "Required";
+                        return errors;
                     }
-                    return errors;
+                    return {};
                 }}
-                onSubmit={(values, { setSubmitting }) => {
-                    setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
-                        setSubmitting(false);
-                    }, 400);
+                onSubmit={(values, { resetForm }) => {
+                    dispatch(actions.addTask(values.task, new Date().getTime()))
+                    resetForm({})
                 }}
             >
                 {({
                     values,
                     errors,
                     touched,
+                    handleChange,
                     handleSubmit,
                 }) => (
                     <form onSubmit={handleSubmit}>
@@ -36,9 +39,11 @@ export const AddField: FC<propsType> = () => {
                             name="task"
                             placeholder="Add task..."
                             value={values.task}
+                            onChange={handleChange}
                             className={errors.task && touched.task ? styles.danger : ''}
                         />
-                        <button type="submit" >
+
+                        <button type="submit">
                             Submit
                         </button>
                     </form>
